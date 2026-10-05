@@ -1,0 +1,54 @@
+services:
+  # ----------------------------------------------------
+  # 1. Base de Datos Relacional (PostgreSQL)
+  # ----------------------------------------------------
+  db:
+    image: postgres:16-alpine
+    container_name: survey_postgres_db
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: survey_user
+      POSTGRES_PASSWORD: survey_secure_password_2026
+      POSTGRES_DB: survey_database
+    ports:
+      - "5433:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U survey_user -d survey_database"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    networks:
+      - survey_network
+
+  # ----------------------------------------------------
+  # 2. Aplicación Web Monolítica (Backend + Frontend)
+  # ----------------------------------------------------
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: survey_monolith_app
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    environment:
+      PORT: 3000
+      NODE_ENV: production
+      DATABASE_URL: postgres://survey_user:survey_secure_password_2026@db:5432/survey_database
+    depends_on:
+      db:
+        condition: service_healthy
+    volumes:
+      - ./data:/app/data
+    networks:
+      - survey_network
+
+volumes:
+  postgres_data:
+    driver: local
+
+networks:
+  survey_network:
+    driver: bridge
