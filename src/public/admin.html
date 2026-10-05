@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Panel de Administración con autenticación JWT, métricas, KPIs y gestión de preguntas para la encuesta de satisfacción.">
+  <title>Panel de Administración | Métricas & Gestión</title>
+  
+  <!-- CSS -->
+  <link rel="stylesheet" href="/css/variables.css">
+  <link rel="stylesheet" href="/css/admin.css">
+
+  <!-- Chart.js CDN for interactive data visualizations -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.2/dist/chart.umd.min.js"></script>
+</head>
+<body>
+  <div class="admin-container">
+    
+    <!-- ============================================== -->
+    <!-- 1. VISTA DE INICIO DE SESIÓN (LOGIN)           -->
+    <!-- ============================================== -->
+    <div id="view-login" class="login-view-wrapper">
+      <div class="login-card">
+        <div class="login-icon">🔐</div>
+        <h2>Acceso Administrativo</h2>
+        <p>Inicia sesión con tus credenciales para acceder al dashboard y gestión de métricas.</p>
+
+        <form id="admin-login-form" class="login-form">
+          <div id="login-error" class="login-error-alert"></div>
+
+          <div class="form-group">
+            <label for="login-username">Usuario:</label>
+            <input type="text" id="login-username" class="form-control" placeholder="Ej. admin" required autocomplete="username">
+          </div>
+
+          <div class="form-group">
+            <label for="login-password">Contraseña:</label>
+            <input type="password" id="login-password" class="form-control" placeholder="" required autocomplete="current-password">
+          </div>
+
+          <button type="submit" id="btn-login-submit" class="btn btn-primary" style="width: 100%; padding: 0.9rem; margin-top: 0.5rem;">
+            <span>Ingresar al Panel</span>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"></path>
+              <polyline points="10 17 15 12 10 7"></polyline>
+              <line x1="15" y1="12" x2="3" y2="12"></line>
+            </svg>
+          </button>
+        </form>
+      </div>
+    </div>
+
+    <!-- ============================================== -->
+    <!-- 2. VISTA DE DASHBOARD ADMINISTRATIVO           -->
+    <!-- ============================================== -->
+    <div id="view-dashboard" style="display: none;">
+      <!-- Navbar Header -->
+      <header class="admin-navbar">
+        <div class="admin-brand">
+          <div class="admin-brand-icon">📊</div>
+          <div>
+            <h1 style="font-family: var(--font-heading); font-size: 1.25rem; font-weight: 800; color: var(--text-main);">
+              Panel de Métricas & Control
+            </h1>
+            <span style="font-size: 0.82rem; color: var(--text-muted);">
+              Monitoreo en tiempo real de satisfacción y servicio
+            </span>
+          </div>
+        </div>
+
+        <div class="admin-nav-actions">
+          <div id="admin-user-badge" class="badge badge-indigo" style="font-size: 0.85rem; padding: 0.4rem 0.85rem;">
+            👤 <span id="admin-user-name">Administrador</span>
+          </div>
+
+          <button type="button" id="btn-refresh-metrics" class="btn btn-secondary" title="Actualizar datos">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="23 4 23 10 17 10"></polyline>
+              <polyline points="1 20 1 14 7 14"></polyline>
+              <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path>
+            </svg>
+            <span>Actualizar</span>
+          </button>
+
+          <button type="button" id="btn-export-csv" class="btn btn-secondary" title="Exportar todas las respuestas a Excel/CSV">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+              <polyline points="7 10 12 15 17 10"></polyline>
+              <line x1="12" y1="15" x2="12" y2="3"></line>
+            </svg>
+            <span>Exportar CSV</span>
+          </button>
+
+          <a href="/" class="btn btn-outline" title="Abrir portal de encuesta cliente" target="_blank">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+              <polyline points="15 3 21 3 21 9"></polyline>
+              <line x1="10" y1="14" x2="21" y2="3"></line>
+            </svg>
+            <span>Ver Encuesta</span>
+          </a>
+
+          <button type="button" id="btn-admin-logout" class="btn btn-secondary" style="color: var(--accent-rose);" title="Cerrar sesión">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+              <polyline points="16 17 21 12 16 7"></polyline>
+              <line x1="21" y1="12" x2="9" y2="12"></line>
+            </svg>
+            <span>Salir</span>
+          </button>
+        </div>
+      </header>
+
+      <!-- Navigation Tabs -->
+      <nav class="tabs-navigation">
+        <button type="button" class="tab-btn active" data-tab="tab-metrics">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="18" y1="20" x2="18" y2="10"></line>
+            <line x1="12" y1="20" x2="12" y2="4"></line>
+            <line x1="6" y1="20" x2="6" y2="14"></line>
+          </svg>
+          <span>Métricas y KPIs</span>
+        </button>
+
+        <button type="button" class="tab-btn" data-tab="tab-feedback">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+          </svg>
+          <span>Respuestas Abiertas</span>
+          <span id="feedback-counter-badge" class="badge badge-cyan" style="margin-left: 0.3rem;">0</span>
+        </button>
+
+        <button type="button" class="tab-btn" data-tab="tab-questions">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="3"></circle>
+            <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+          </svg>
+          <span>Gestión de Preguntas</span>
+        </button>
+      </nav>
+
+      <!-- ============================================== -->
+      <!-- TAB 1: MÉTRICAS Y KPIS                         -->
+      <!-- ============================================== -->
+      <main id="tab-metrics" class="admin-tab-pane active">
+        <!-- KPI Cards Summary -->
+        <section class="kpi-grid">
+          <div class="kpi-card">
+            <div class="kpi-header">
+              <span class="kpi-title">Total Respuestas</span>
+              <div class="kpi-icon" style="background: var(--pastel-indigo); color: var(--primary);">👥</div>
+            </div>
+            <div class="kpi-value-row">
+              <span id="kpi-total-responses" class="kpi-value">0</span>
+            </div>
+            <div class="kpi-subtext">Encuestas completadas</div>
+          </div>
+
+          <div class="kpi-card">
+            <div class="kpi-header">
+              <span class="kpi-title">CSAT General</span>
+              <div class="kpi-icon" style="background: var(--pastel-amber); color: var(--accent-amber);">⭐</div>
+            </div>
+            <div class="kpi-value-row">
+              <span id="kpi-csat-avg" class="kpi-value">0.0</span>
+              <span style="color: var(--text-muted); font-size: 1.15rem; font-weight: 700;">/ 5.0</span>
+            </div>
+            <div class="kpi-subtext">Satisfacción promedio</div>
+          </div>
+
+          <div class="kpi-card">
+            <div class="kpi-header">
+              <span class="kpi-title">Net Promoter Score</span>
+              <div class="kpi-icon" style="background: var(--pastel-mint); color: var(--accent-emerald);">🚀</div>
+            </div>
+            <div class="kpi-value-row">
+              <span id="kpi-nps-score" class="kpi-value">+0</span>
+            </div>
+            <div class="kpi-subtext">Lealtad y recomendación</div>
+          </div>
+
+          <div class="kpi-card">
+            <div class="kpi-header">
+              <span class="kpi-title">Tasa Promotores</span>
+              <div class="kpi-icon" style="background: var(--pastel-cyan); color: var(--accent-cyan);">💎</div>
+            </div>
+            <div class="kpi-value-row">
+              <span id="kpi-promoters-rate" class="kpi-value">0%</span>
+            </div>
+            <div class="kpi-subtext">Calificación 9-10 en NPS</div>
+          </div>
+        </section>
+
+        <!-- Charts Row -->
+        <section class="charts-grid">
+          <div class="chart-card">
+            <div class="chart-header">
+              <h3>Distribución de Calificaciones (CSAT)</h3>
+              <span class="badge badge-amber">1 a 5 Estrellas</span>
+            </div>
+            <div class="chart-canvas-wrapper">
+              <canvas id="chart-csat-distribution"></canvas>
+            </div>
+          </div>
+
+          <div class="chart-card">
+            <div class="chart-header">
+              <h3>Segmentación NPS</h3>
+              <span class="badge badge-emerald">Promotores vs Detractores</span>
+            </div>
+            <div class="chart-canvas-wrapper">
+              <canvas id="chart-nps-breakdown"></canvas>
+            </div>
+          </div>
+        </section>
+
+        <!-- Question by Question Breakdown -->
+        <section class="metrics-breakdown-section">
+          <div class="section-header">
+            <h2>Análisis Detallado por Pregunta</h2>
+            <span style="font-size: 0.85rem; color: var(--text-muted);">Actualizado en tiempo real</span>
+          </div>
+          <div id="questions-breakdown-container" class="breakdown-grid">
+            <!-- Rendered via JS -->
+          </div>
+        </section>
+      </main>
+
+      <!-- ============================================== -->
+      <!-- TAB 2: RESPUESTAS ABIERTAS                     -->
+      <!-- ============================================== -->
+      <main id="tab-feedback" class="admin-tab-pane">
+        <div class="section-header">
+          <div>
+            <h2>Bandeja de Preguntas Abiertas</h2>
+            <p style="font-size: 0.92rem; color: var(--text-muted);">
+              Consulta las sugerencias, felicitaciones y comentarios libres registrados por los clientes.
+            </p>
+          </div>
+        </div>
+
+        <div class="feedback-filter-bar">
+          <input type="text" id="feedback-search-input" class="feedback-search-input" placeholder="🔍 Buscar por palabra clave, cliente o texto...">
+        </div>
+
+        <div id="feedback-list-container" class="feedback-cards-list">
+          <!-- Rendered via JS -->
+        </div>
+      </main>
+
+      <!-- ============================================== -->
+      <!-- TAB 3: GESTIÓN DE PREGUNTAS                   -->
+      <!-- ============================================== -->
+      <main id="tab-questions" class="admin-tab-pane">
+        <div class="section-header">
+          <div>
+            <h2>Gestor de Preguntas</h2>
+            <p style="font-size: 0.92rem; color: var(--text-muted);">
+              Crea, edita o reorganiza las preguntas que aparecerán en la encuesta de satisfacción.
+            </p>
+          </div>
+          <button type="button" id="btn-open-create-modal" class="btn btn-primary">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="12" y1="5" x2="12" y2="19"></line>
+              <line x1="5" y1="12" x2="19" y2="12"></line>
+            </svg>
+            <span>Nueva Pregunta</span>
+          </button>
+        </div>
+
+        <div class="questions-table-card">
+          <div class="table-responsive">
+            <table class="custom-table">
+              <thead>
+                <tr>
+                  <th style="width: 60px;">Orden</th>
+                  <th>Pregunta / Título</th>
+                  <th>Tipo</th>
+                  <th>Opciones</th>
+                  <th>Obligatoria</th>
+                  <th>Respuestas</th>
+                  <th>Estado</th>
+                  <th style="text-align: right;">Acciones</th>
+                </tr>
+              </thead>
+              <tbody id="questions-table-body">
+                <!-- Rendered via JS -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </main>
+
+    </div>
+
+  </div>
+
+  <!-- ============================================== -->
+  <!-- MODAL: CREAR / EDITAR PREGUNTA                 -->
+  <!-- ============================================== -->
+  <div id="question-modal" class="modal-overlay">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3 id="modal-title">Configurar Pregunta</h3>
+        <button type="button" id="btn-close-modal" class="btn-icon" style="border: none;">✕</button>
+      </div>
+
+      <form id="question-form">
+        <input type="hidden" id="form-question-id">
+        <div class="modal-body">
+          <div class="form-group">
+            <label for="form-title">Pregunta o Título:*</label>
+            <input type="text" id="form-title" class="form-control" placeholder="Ej. ¿Cómo calificarías la rapidez del servicio?" required>
+          </div>
+
+          <div class="form-group">
+            <label for="form-description">Descripción o Instrucción (Opcional):</label>
+            <input type="text" id="form-description" class="form-control" placeholder="Ej. Selecciona una opción del 1 al 5">
+          </div>
+
+          <div class="form-group">
+            <label for="form-type">Tipo de Pregunta:*</label>
+            <select id="form-type" class="form-control" required>
+              <option value="rating">Calificación de Estrellas (1 a 5)</option>
+              <option value="nps">Escala NPS (0 a 10)</option>
+              <option value="single_choice">Selección Única (Radio)</option>
+              <option value="multiple_choice">Selección Múltiple (Checkboxes)</option>
+              <option value="text">Pregunta Abierta (Texto Libre)</option>
+            </select>
+          </div>
+
+          <!-- Dynamic Options Section (for single/multiple choice) -->
+          <div id="form-options-wrapper" class="dynamic-options-container" style="display: none;">
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+              <label style="font-size: 0.88rem; font-weight: 700; color: var(--text-main);">
+                Opciones de Respuesta:
+              </label>
+              <button type="button" id="btn-add-option" class="btn btn-secondary" style="padding: 0.35rem 0.75rem; font-size: 0.8rem;">
+                + Agregar Opción
+              </button>
+            </div>
+            <div id="options-inputs-list" style="display: flex; flex-direction: column; gap: 0.5rem;">
+              <!-- Option input rows added here -->
+            </div>
+          </div>
+
+          <div style="display: flex; gap: 1.5rem; flex-wrap: wrap;">
+            <div class="form-group" style="flex: 1;">
+              <label for="form-order">Orden de aparición:</label>
+              <input type="number" id="form-order" class="form-control" value="1" min="1" max="99">
+            </div>
+
+            <div class="form-group" style="flex: 1; justify-content: center;">
+              <label style="cursor: pointer; display: flex; align-items: center; gap: 0.6rem; margin-top: 1.5rem; font-weight: 600; color: var(--text-main);">
+                <input type="checkbox" id="form-required" checked style="width: 18px; height: 18px; accent-color: var(--primary);">
+                <span>Obligatoria</span>
+              </label>
+            </div>
+          </div>
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" id="btn-cancel-modal" class="btn btn-secondary">Cancelar</button>
+          <button type="submit" id="btn-save-question" class="btn btn-primary">Guardar Pregunta</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- JavaScript -->
+  <script src="/js/admin.js"></script>
+</body>
+</html>
