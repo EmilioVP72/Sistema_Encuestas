@@ -1,0 +1,212 @@
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Outfit:wght@400;500;600;700;800&display=swap');
+
+:root {
+  /* ====================================================
+     Palette from User Reference:
+     #99B898 - Sage Green
+     #FECEA8 - Soft Peach / Warm Cream
+     #FF847C - Sunset Coral
+     #E84A5F - Crimson Watermelon Red
+     #2A363B - Dark Slate Charcoal
+     ==================================================== */
+  --c-sage: #99b898;
+  --c-peach: #fecea8;
+  --c-coral: #ff847c;
+  --c-crimson: #e84a5f;
+  --c-dark: #2a363b;
+
+  /* Fresh luminous background with soft ambient gradient */
+  --bg-main: #fbfbf9;
+  --bg-gradient: radial-gradient(circle at 10% 12%, rgba(153, 184, 152, 0.28) 0%, transparent 40%),
+                 radial-gradient(circle at 90% 18%, rgba(254, 206, 168, 0.38) 0%, transparent 42%),
+                 radial-gradient(circle at 50% 88%, rgba(255, 132, 124, 0.16) 0%, transparent 48%),
+                 linear-gradient(180deg, #fdfdfc 0%, #f7f6f2 100%);
+  
+  --card-bg: rgba(255, 255, 255, 0.92);
+  --card-bg-hover: #ffffff;
+  --card-border: rgba(42, 54, 59, 0.08);
+  --card-border-glow: rgba(232, 74, 95, 0.3);
+  
+  /* Primary & Accent Gradients */
+  --primary: #e84a5f;
+  --primary-hover: #d23b50;
+  --primary-gradient: linear-gradient(135deg, #e84a5f 0%, #ff847c 100%);
+  --secondary-gradient: linear-gradient(135deg, #99b898 0%, #7ea47d 100%);
+  --warm-gradient: linear-gradient(135deg, #fecea8 0%, #ff847c 100%);
+  
+  /* Palette Badges & Accents */
+  --badge-sage-bg: rgba(153, 184, 152, 0.22);
+  --badge-sage-border: rgba(153, 184, 152, 0.6);
+  --badge-sage-text: #2f4f2e;
+
+  --badge-peach-bg: rgba(254, 206, 168, 0.35);
+  --badge-peach-border: rgba(254, 206, 168, 0.8);
+  --badge-peach-text: #8c4c16;
+
+  --badge-coral-bg: rgba(255, 132, 124, 0.2);
+  --badge-coral-border: rgba(255, 132, 124, 0.55);
+  --badge-coral-text: #b8332b;
+
+  --badge-crimson-bg: rgba(232, 74, 95, 0.15);
+  --badge-crimson-border: rgba(232, 74, 95, 0.45);
+  --badge-crimson-text: #a81c32;
+
+  --badge-dark-bg: rgba(42, 54, 59, 0.09);
+  --badge-dark-border: rgba(42, 54, 59, 0.2);
+  --badge-dark-text: #2a363b;
+
+  /* Typography / Text */
+  --text-main: #2a363b;
+  --text-body: #3c4c52;
+  --text-muted: #6a7c83;
+  --text-dim: #9aa8ad;
+  
+  --font-heading: 'Outfit', sans-serif;
+  --font-body: 'Plus Jakarta Sans', sans-serif;
+  
+  /* Elevations & Glassmorphism */
+  --glass-blur: blur(16px);
+  --shadow-sm: 0 2px 5px rgba(42, 54, 59, 0.04), 0 1px 2px rgba(42, 54, 59, 0.03);
+  --shadow-md: 0 10px 25px -5px rgba(42, 54, 59, 0.07), 0 8px 10px -6px rgba(42, 54, 59, 0.04);
+  --shadow-lg: 0 20px 35px -10px rgba(42, 54, 59, 0.09), 0 1px 3px rgba(42, 54, 59, 0.05);
+  --shadow-glow: 0 6px 20px rgba(232, 74, 95, 0.25);
+  
+  /* Radii */
+  --radius-sm: 8px;
+  --radius-md: 14px;
+  --radius-lg: 20px;
+  --radius-full: 9999px;
+  
+  /* Transitions */
+  --transition-fast: 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-normal: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-bounce: 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: var(--font-body);
+  background: var(--bg-gradient);
+  background-attachment: fixed;
+  color: var(--text-body);
+  min-height: 100vh;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+::-webkit-scrollbar-track {
+  background: #f1f0eb;
+}
+::-webkit-scrollbar-thumb {
+  background: #cfd6d1;
+  border-radius: var(--radius-full);
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--c-sage);
+}
+
+/* Base utility buttons */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1.5rem;
+  border-radius: var(--radius-md);
+  font-family: var(--font-body);
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+  border: none;
+  outline: none;
+  transition: all var(--transition-normal);
+  text-decoration: none;
+  user-select: none;
+}
+
+.btn-primary {
+  background: var(--primary-gradient);
+  color: #ffffff;
+  box-shadow: 0 4px 14px rgba(232, 74, 95, 0.28);
+}
+.btn-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 22px rgba(232, 74, 95, 0.38);
+  filter: brightness(1.03);
+}
+.btn-primary:active {
+  transform: translateY(0);
+}
+
+.btn-secondary {
+  background: #ffffff;
+  border: 1px solid var(--card-border);
+  color: var(--text-main);
+  box-shadow: var(--shadow-sm);
+}
+.btn-secondary:hover {
+  background: #fcfbfa;
+  border-color: rgba(42, 54, 59, 0.2);
+  transform: translateY(-1px);
+}
+
+.btn-outline {
+  background: #ffffff;
+  border: 1.5px solid var(--c-crimson);
+  color: var(--c-crimson);
+}
+.btn-outline:hover {
+  background: rgba(232, 74, 95, 0.08);
+}
+
+/* Badges using exact palette */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.28rem 0.75rem;
+  border-radius: var(--radius-full);
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+}
+
+.badge-emerald, .badge-sage {
+  background: var(--badge-sage-bg);
+  color: var(--badge-sage-text);
+  border: 1px solid var(--badge-sage-border);
+}
+
+.badge-peach {
+  background: var(--badge-peach-bg);
+  color: var(--badge-peach-text);
+  border: 1px solid var(--badge-peach-border);
+}
+
+.badge-amber, .badge-coral {
+  background: var(--badge-coral-bg);
+  color: var(--badge-coral-text);
+  border: 1px solid var(--badge-coral-border);
+}
+
+.badge-rose, .badge-crimson {
+  background: var(--badge-crimson-bg);
+  color: var(--badge-crimson-text);
+  border: 1px solid var(--badge-crimson-border);
+}
+
+.badge-indigo, .badge-dark, .badge-cyan {
+  background: var(--badge-dark-bg);
+  color: var(--badge-dark-text);
+  border: 1px solid var(--badge-dark-border);
+}

@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Encuesta de satisfacción del cliente y evaluación de servicio con métricas en tiempo real.">
+  <title>Encuesta de Satisfacción | Experiencia del Cliente</title>
+  
+  <!-- CSS -->
+  <link rel="stylesheet" href="/css/variables.css">
+  <link rel="stylesheet" href="/css/survey.css">
+  
+  <!-- Canvas Confetti CDN for celebration effect -->
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
+</head>
+<body>
+  <div class="portal-container">
+    
+    <!-- Top Navigation Bar -->
+    <header class="portal-header">
+      <div class="brand-wrapper">
+        <div class="brand-icon">✨</div>
+        <div class="brand-text">
+          <h1>Servicio & Experiencia</h1>
+          <span>Encuesta de Satisfacción al Cliente</span>
+        </div>
+      </div>
+      <a href="/admin" class="admin-link" id="link-admin-panel" title="Acceso al Panel Administrativo">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="3" y="3" width="7" height="7"></rect>
+          <rect x="14" y="3" width="7" height="7"></rect>
+          <rect x="14" y="14" width="7" height="7"></rect>
+          <rect x="3" y="14" width="7" height="7"></rect>
+        </svg>
+        <span>Panel Admin</span>
+      </a>
+    </header>
+
+    <!-- 1. VISTA DE BIENVENIDA -->
+    <section id="view-welcome" class="view-section active">
+      <div class="welcome-card">
+        <span class="badge badge-indigo">🎯 Tu opinión nos importa</span>
+        <div class="welcome-hero">
+          <h2>¡Bienvenido! Ayúdanos a mejorar tu experiencia</h2>
+          <p>
+            Nos esforzamos por ofrecerte un servicio excepcional día a día. Por favor, tómate un momento para responder esta breve encuesta y compartir tus impresiones con nosotros.
+          </p>
+        </div>
+
+        <div class="welcome-features">
+          <div class="feature-box">
+            <span class="feature-icon">⏱️</span>
+            <strong>Rápida & Directa</strong>
+            <span>Te tomará menos de 2 minutos completarla.</span>
+          </div>
+          <div class="feature-box">
+            <span class="feature-icon">🔒</span>
+            <strong>100% Confidencial</strong>
+            <span>Tus respuestas son seguras y anónimas.</span>
+          </div>
+          <div class="feature-box">
+            <span class="feature-icon">🚀</span>
+            <strong>Impacto Real</strong>
+            <span>Tus sugerencias impulsan mejoras continuas.</span>
+          </div>
+        </div>
+
+        <div class="respondent-input-group">
+          <label for="respondent-name">Tu nombre o empresa (Opcional):</label>
+          <input type="text" id="respondent-name" placeholder="Ej. Juan Pérez o Déjalo en blanco si prefieres anonimato" maxlength="100">
+        </div>
+
+        <button type="button" id="btn-start-survey" class="btn btn-primary" style="font-size: 1.1rem; padding: 1rem 2.5rem;">
+          <span>Comenzar Encuesta</span>
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="5" y1="12" x2="19" y2="12"></line>
+            <polyline points="12 5 19 12 12 19"></polyline>
+          </svg>
+        </button>
+      </div>
+    </section>
+
+    <!-- 2. VISTA DE FORMULARIO DE ENCUESTA -->
+    <section id="view-survey" class="view-section">
+      <!-- Barra de Progreso Sticky -->
+      <div class="survey-progress-bar-container">
+        <div class="progress-info">
+          <span id="progress-text">Preguntas respondidas: 0 de 0</span>
+          <span id="progress-percent">0%</span>
+        </div>
+        <div class="progress-track">
+          <div class="progress-fill" id="progress-fill"></div>
+        </div>
+      </div>
+
+      <!-- Formulario Dinámico -->
+      <form id="survey-form" novalidate>
+        <div id="questions-container" class="questions-list">
+          <!-- Renderizado dinámicamente desde la BD vía JavaScript -->
+          <div style="text-align: center; padding: 3rem; color: var(--text-muted);">
+            <div style="font-size: 2rem; margin-bottom: 0.5rem;">⏳</div>
+            <p>Cargando preguntas de la encuesta...</p>
+          </div>
+        </div>
+
+        <div class="survey-submit-bar">
+          <div id="survey-error-alert" style="display: none; background: rgba(244, 63, 94, 0.15); border: 1px solid var(--accent-rose); color: #fecdd3; padding: 0.85rem 1.5rem; border-radius: var(--radius-md); font-size: 0.9rem; text-align: center; max-width: 500px;">
+            ⚠️ Por favor responde todas las preguntas obligatorias antes de enviar.
+          </div>
+
+          <button type="submit" id="btn-submit-survey" class="btn btn-primary btn-submit-survey">
+            <span id="btn-submit-text">Enviar Encuesta</span>
+            <svg id="btn-submit-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M22 2L11 13"></path>
+              <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+            </svg>
+          </button>
+        </div>
+      </form>
+    </section>
+
+    <!-- 3. VISTA DE DESPEDIDA Y AGRADECIMIENTO -->
+    <section id="view-farewell" class="view-section">
+      <div class="farewell-card">
+        <div class="success-icon-badge">✓</div>
+        <h2>¡Muchísimas Gracias por tu Tiempo!</h2>
+        <p>
+          Tus respuestas han sido registradas exitosamente en nuestro sistema. Valoramos enormemente tu retroalimentación y la utilizaremos para seguir perfeccionando la calidad de nuestro servicio.
+        </p>
+
+        <div class="farewell-actions">
+          <button type="button" id="btn-close-window" class="btn btn-primary" style="padding: 1rem 2.5rem; font-size: 1.05rem;">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M18 6L6 18"></path>
+              <path d="M6 6l12 12"></path>
+            </svg>
+            <span>Cerrar Página</span>
+          </button>
+        </div>
+
+        <!-- Mensaje informativo para navegadores modernos que bloquean window.close() -->
+        <p id="close-helper-text" style="display: none; font-size: 0.82rem; color: var(--text-dim); margin-top: 1.5rem;">
+          💡 Nota: Si tu navegador bloquea el cierre automático de la pestaña, puedes cerrarla manualmente desde la parte superior.
+        </p>
+      </div>
+    </section>
+
+  </div>
+
+  <!-- JavaScript -->
+  <script src="/js/survey.js"></script>
+</body>
+</html>
